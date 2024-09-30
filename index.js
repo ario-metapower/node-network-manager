@@ -369,12 +369,12 @@ const setDhcpConnection = (profile) => {
 };
 
 // Set static IP for a connection profile
-const setStaticIpConnection = (profile, ipv4, gateway, dns = []) => {
+const setStaticIpConnection = (profile, ipv4, gateway, dns = [], netmaskBits = 24) => {
   const dnsServers = dns.length > 0 ? dns.join(",") : "";
   const cmd = [
     "connection", "modify", String(profile),
     "ipv4.method", "manual",
-    "ipv4.addresses", `${ipv4}/24`,
+    "ipv4.addresses", `${ipv4}/${netmaskBits}`,
     "ipv4.gateway", gateway
   ];
   if (dnsServers) {
