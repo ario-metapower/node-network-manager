@@ -386,10 +386,12 @@ const setStaticIpConnection = (profile, ipv4, gateway, dns = [], netmaskBits = 2
 // Get DNS settings for a connection profile
 const getDnsConnection = async (profile) => {
   const data = await clib(["connection", "show", String(profile)]);
-  const dnsEntry1 = data.find(item => item["IP4.DNS[1]"])
-  const dnsEntry2 = data.find(item => item["IP4.DNS[2]"]);
+  const dnsEntry = data.find(item => item["IP4.DNS[1]"])
+  if (!dnsEntry) return [];
+  const dnsEntry1 = dnsEntry["IP4.DNS[1]"] || "";
+  const dnsEntry2 = dnsEntry["IP4.DNS[2]"] || "";
 
-  return [dnsEntry1["IP4.DNS[1]"], dnsEntry2["IP4.DNS[2]"]];
+  return [dnsEntry1, dnsEntry2];
 };
 
 // Get IPv4 configuration method (auto or manual) for a connection profile
@@ -402,6 +404,8 @@ const getIPv4ConfigMethod = async (profile) => {
 
 // exports
 module.exports = {
+  cli,
+  clib,
   getIPv4,
   activityMonitor,
   // hostname
@@ -417,8 +421,10 @@ module.exports = {
   connectionDelete,
   getConnectionProfilesList,
   changeDnsConnection,
+  getDnsConnection,
   addEthernetConnection,
   addGsmConnection,
+  getIPv4ConfigMethod,
   // device
   deviceStatus,
   deviceConnect,
@@ -435,8 +441,6 @@ module.exports = {
   wifiConnect,
   setDhcpConnection,
   setStaticIpConnection,
-  getDnsConnection,
-  getIPv4ConfigMethod,
 };
 
 
